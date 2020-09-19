@@ -67,9 +67,12 @@ LineState = namedtuple('LineState', ['full_hbox'])
 
 
 def clean_file(ifp, ofp, path_prefix, filters):
+    errcode = 0
     path_pattern = path_prefix + UNPREFIXED_PATH_PATTERN
     prev_state = LineState(False)
     for line in ifp:
+        if line.startswith('! '):
+            errcode = 1
         state = LineState(line.startswith('Overfull \\hbox')
             or line.startswith('Underfull \\hbox'))  # noqa
         discard = ((filters['full_hbox_details'] and prev_state.full_hbox)
@@ -93,6 +96,7 @@ def clean_file(ifp, ofp, path_prefix, filters):
                 ofp.write(line)
                 ofp.flush()
         prev_state = state
+    return errcode
 
 
 def main():
@@ -100,11 +104,15 @@ def main():
     for name, (defval, help) in FILTERS.items():
         parser.add_argument('--' + name.replace('_', '-'), type=int, choices=(0, 1),
             default=defval, help=help + ' (default: {})'.format(int(defval)))
+    parser.add_argument('--detect-error', type=int, choices=(0, 1), default=True,
+        help='detect error messages and change exit status accordingly (default: 1)')
     args = parser.parse_args()
 
     prefix = get_prefix()
     filters = {name: bool(value) for name, value in vars(args).items()}
-    clean_file(sys.stdin, sys.stdout, prefix, filters)
+    errcode = clean_file(sys.stdin, sys.stdout, prefix, filters)
+    if args.detect_error:
+        sys.exit(errcode)
 
 
 if __name__ == '__main__':
