@@ -15,6 +15,7 @@ PATH_STUB_PATTERN = r'\(#[\(#\) ]*\)'
 
 BAD_STRS = tuple("""
  Excluding comment 'comment'
+Excluding 'comment' comment.
  ABD: EveryShipout initializing macros
 """.strip('\n').split('\n'))
 
