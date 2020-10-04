@@ -12,6 +12,7 @@ FILE_FORMATS = "sty|tex|cfg|def|clo|fd|mkii|pfb|enc|map|cls"
 UNPREFIXED_PATH_PATTERN = r'/texmf-(dist|var)/[a-zA-Z0-9\-\/\.]+\.(' + FILE_FORMATS + ')'
 PATH_STUB = '#'
 PATH_STUB_PATTERN = r'\(#[\(#\) ]*\)'
+PATH_STUB_PATTERN_2 = r'[\(#\) ]+\n'
 
 BAD_STRS = tuple("""
  Excluding comment 'comment'
@@ -67,6 +68,12 @@ def get_prefix():
 LineState = namedtuple('LineState', ['full_hbox'])
 
 
+def fullmatch(pattern, string, flags=0):
+    m = re.match(pattern, string, flags=flags)
+    if m and m.end() == len(string):
+        return m
+
+
 def clean_file(ifp, ofp, path_prefix, filters):
     errcode = 0
     path_pattern = path_prefix + UNPREFIXED_PATH_PATTERN
@@ -88,6 +95,8 @@ def clean_file(ifp, ofp, path_prefix, filters):
                 line = re.sub(path_pattern, PATH_STUB, line)
                 if filters['path_stubs']:
                     line = re.sub(PATH_STUB_PATTERN, '', line)
+                    if fullmatch(PATH_STUB_PATTERN_2, line):
+                        line = ''
                     line = line.replace('<' + PATH_STUB + '>', '')
                     line = line.replace('{' + PATH_STUB + '}', '')
             if filters['page_numbers']:
