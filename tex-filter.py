@@ -8,7 +8,7 @@ import argparse
 from collections import namedtuple
 
 
-FILE_FORMATS = "sty|tex|cfg|def|clo|fd|mkii|pfb|enc|map|cls"
+FILE_FORMATS = "sty|tex|cfg|def|clo|fd|mkii|pfb|enc|map|cls|otf"
 UNPREFIXED_PATH_PATTERN = r'/texmf-(dist|var)/[a-zA-Z0-9\-\/\.]+\.(' + FILE_FORMATS + ')'
 PATH_STUB = '#'
 PATH_STUB_PATTERN = r'\(#[\(#\) ]*\)'
@@ -22,19 +22,24 @@ Excluding 'comment' comment.
 
 BAD_LINES = tuple("""
 This is pdfTeX, Version
+This is LuaHBTeX, Version
+This is XeTeX, Version
  restricted \\write18 enabled.
+ restricted system commands enabled.
 LaTeX2e <
 entering extended mode
 L3 programming layer
+ L3 programming layer
 Document Class:
 For additional information on amsmath, use the `?' option.
 Document Style algorithmicx 1.2 - a greatly improved `algorithmic' style
 Document Style - pseudocode environments for use with the `algorithmicx' style
 *geometry* driver: auto-detecting
-*geometry* detected driver: pdftex
+*geometry* detected driver:
 [Loading MPS to PDF converter
 (see the transcript file for additional information)
 Transcript written on
+avail lists:
 """.strip('\n').split('\n'))
 
 CITEREF_PATTERN = (r"LaTeX Warning: (Citation|Reference|Hyper reference) `[^']+'"
