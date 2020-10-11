@@ -24,12 +24,11 @@ BAD_LINES = tuple("""
 This is pdfTeX, Version
 This is LuaHBTeX, Version
 This is XeTeX, Version
- restricted \\write18 enabled.
- restricted system commands enabled.
+restricted \\write18 enabled.
+restricted system commands enabled.
 LaTeX2e <
 entering extended mode
 L3 programming layer
- L3 programming layer
 Document Class:
 For additional information on amsmath, use the `?' option.
 Document Style algorithmicx 1.2 - a greatly improved `algorithmic' style
@@ -86,6 +85,7 @@ def clean_file(ifp, ofp, path_prefix, filters):
     for line in ifp:
         if line.startswith('! '):
             errcode = 1
+        line = line.strip() + '\n'
         state = LineState(line.startswith('Overfull \\hbox')
             or line.startswith('Underfull \\hbox'))  # noqa
         discard = ((filters['full_hbox_details'] and prev_state.full_hbox)
