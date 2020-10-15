@@ -54,6 +54,7 @@ FILTERS = {
     'page_numbers': (True, 'remove page-numbers'),
     'empty_lines': (True, 'remove empty lines'),
     'citeref': (False, 'remove warnings about missing citations/references'),
+    'words_of_mem': (True, 'remove info about words of node memory still in use'),
 }
 
 
@@ -69,7 +70,7 @@ def get_prefix():
     return path[:-len(suffix)]
 
 
-LineState = namedtuple('LineState', ['full_hbox'])
+LineState = namedtuple('LineState', ['full_hbox', 'words_of_mem'])
 
 
 def fullmatch(pattern, string, flags=0):
@@ -81,17 +82,20 @@ def fullmatch(pattern, string, flags=0):
 def clean_file(ifp, ofp, path_prefix, filters):
     errcode = 0
     path_pattern = path_prefix + UNPREFIXED_PATH_PATTERN
-    prev_state = LineState(False)
+    prev_state = LineState(False, False)
     for line in ifp:
         if line.startswith('! '):
             errcode = 1
         line = line.strip() + '\n'
-        state = LineState(line.startswith('Overfull \\hbox')
-            or line.startswith('Underfull \\hbox'))  # noqa
+        full_hbox_warn = line.startswith('Overfull \\hbox') or line.startswith('Underfull \\hbox')
+        words_of_mem = 'words of node memory still in use' in line
+        state = LineState(full_hbox_warn, words_of_mem)
         discard = ((filters['full_hbox_details'] and prev_state.full_hbox)
             or (filters['full_hbox'] and state.full_hbox)  # noqa
             or (filters['citeref'] and re.match(CITEREF_PATTERN, line))  # noqa
-            or (filters['bad_lines'] and line.startswith(BAD_LINES)))  # noqa
+            or (filters['bad_lines'] and line.startswith(BAD_LINES))  # noqa
+            or (filters['words_of_mem'] and (state.words_of_mem or prev_state.words_of_mem))  # noqa
+            )
         if not discard:
             if filters['bad_strs']:
                 for s in BAD_STRS:
