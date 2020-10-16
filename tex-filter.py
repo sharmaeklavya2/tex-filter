@@ -15,14 +15,14 @@ PATH_STUB_PATTERN = r'\(#[\(#\) ]*\)'
 PATH_STUB_PATTERN_2 = r'[\(#\) ]+'
 
 BAD_STRS = tuple("""
- Excluding comment 'comment'
-Excluding 'comment' comment.
  ABD: EveryShipout initializing macros
 """.strip('\n').split('\n'))
 
 BAD_PATTERNS = r"""
 pdfTeX warning \(dest\): name{[^}]*} has been referenced but does not exist, replaced by a fixed one
 warning  \(pdf backend\): unreferenced destination with name '[^']*'
+ ?Excluding comment '[^']*'\.?
+ ?Excluding '[^']*' comment\.?
 """.strip('\n').split('\n')  # noqa
 
 BAD_LINES = tuple("""
