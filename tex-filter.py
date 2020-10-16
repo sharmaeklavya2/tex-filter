@@ -20,6 +20,11 @@ Excluding 'comment' comment.
  ABD: EveryShipout initializing macros
 """.strip('\n').split('\n'))
 
+BAD_PATTERNS = r"""
+pdfTeX warning \(dest\): name{[^}]*} has been referenced but does not exist, replaced by a fixed one
+warning  \(pdf backend\): unreferenced destination with name '[^']*'
+""".strip('\n').split('\n')  # noqa
+
 BAD_LINES = tuple("""
 This is pdfTeX, Version
 This is LuaHBTeX, Version
@@ -100,6 +105,8 @@ def clean_file(ifp, ofp, path_prefix, filters):
             if filters['bad_strs']:
                 for s in BAD_STRS:
                     line = line.replace(s, '')
+                for s in BAD_PATTERNS:
+                    line = re.sub(s, '', line)
             if filters['paths']:
                 line = re.sub(path_pattern, PATH_STUB, line)
                 if filters['path_stubs']:
