@@ -12,7 +12,7 @@ FILE_FORMATS = "sty|tex|cfg|def|clo|fd|mkii|pfb|enc|map|cls|otf"
 UNPREFIXED_PATH_PATTERN = r'/texmf-(dist|var)/[a-zA-Z0-9\-\/\.]+\.(' + FILE_FORMATS + ')'
 PATH_STUB = '#'
 PATH_STUB_PATTERN = r'\(#[\(#\) ]*\)'
-PATH_STUB_PATTERN_2 = r'[\(#\) ]+\n'
+PATH_STUB_PATTERN_2 = r'[\(#\) ]+'
 
 BAD_STRS = tuple("""
  Excluding comment 'comment'
@@ -88,10 +88,11 @@ def clean_file(ifp, ofp, path_prefix, filters):
     errcode = 0
     path_pattern = path_prefix + UNPREFIXED_PATH_PATTERN
     prev_state = LineState(False, False)
+    prev_is_empty = True
     for line in ifp:
         if line.startswith('! '):
             errcode = 1
-        line = line.strip() + '\n'
+        line = line.strip()
         full_hbox_warn = line.startswith('Overfull \\hbox') or line.startswith('Underfull \\hbox')
         words_of_mem = 'words of node memory still in use' in line
         state = LineState(full_hbox_warn, words_of_mem)
@@ -117,10 +118,11 @@ def clean_file(ifp, ofp, path_prefix, filters):
                     line = line.replace('{' + PATH_STUB + '}', '')
             if filters['page_numbers']:
                 line = re.sub(r'\s*\[[0-9]+\]', '', line)
-            line = line.strip() + '\n'
-            if not(filters['empty_lines'] and line == '\n'):
-                ofp.write(line)
+            line = line.strip()
+            if not(line == '' and (filters['empty_lines'] or prev_is_empty)):
+                ofp.write(line + '\n')
                 ofp.flush()
+            prev_is_empty = line == ''
         prev_state = state
     return errcode
 
