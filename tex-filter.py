@@ -47,7 +47,7 @@ avail lists:
 """.strip('\n').split('\n'))
 
 CITEREF_PATTERN = (r"LaTeX Warning: (Citation|Reference|Hyper reference) `[^']+'"
-    r" on page \d+ undefined on input line \d+.\n")
+    r" on page \d+ undefined on input line \d+.")
 
 FILTERS = {
     'paths': (True, 'replace paths of pre-installed fonts, packages, etc. by a stub'),
