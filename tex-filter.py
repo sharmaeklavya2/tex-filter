@@ -8,7 +8,7 @@ import argparse
 from collections import namedtuple
 
 
-FILE_FORMATS = "sty|tex|cfg|def|clo|fd|mkii|pfb|enc|map|cls|otf"
+FILE_FORMATS = "sty|tex|cfg|def|clo|fd|mkii|pfb|enc|map|cls|otf|ldf"
 UNPREFIXED_PATH_PATTERN = r'/texmf-(dist|var)/[a-zA-Z0-9\-\/\.]+\.(' + FILE_FORMATS + ')'
 PATH_STUB = '#'
 PATH_STUB_PATTERN = r'\(#[\(#\) ]*\)'
@@ -44,6 +44,12 @@ Document Style - pseudocode environments for use with the `algorithmicx' style
 (see the transcript file for additional information)
 Transcript written on
 avail lists:
+AED: lastpage setting LastPage
+Package: textpos
+Grid set
+TextBlockOrigin set to
+socg-lipics-v2019: fix
+socg-lipics-v2019: subcaption
 """.strip('\n').split('\n'))
 
 CITEREF_PATTERN = (r"LaTeX Warning: (Citation|Reference|Hyper reference) `[^']+'"
