@@ -125,7 +125,7 @@ def clean_file(ifp, ofp, path_prefix, filters):
                     line = line.replace('<' + PATH_STUB + '>', '')
                     line = line.replace('{' + PATH_STUB + '}', '')
             if filters['page_numbers']:
-                line = re.sub(r'\s*\[[0-9]+\]', '', line)
+                line = re.sub(r'\s*\[[0-9\.]+\]', '', line)
             if fullmatch(r'[\(\) ]+', line):
                 line = ''
             line = line.strip()
