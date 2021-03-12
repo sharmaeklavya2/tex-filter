@@ -23,8 +23,8 @@ pdfTeX warning \(dest\): name{[^}]*} has been referenced but does not exist, rep
 warning  \(pdf backend\): unreferenced destination with name '[^']*'
  ?Excluding comment '[^']*'\.?
  ?Excluding '[^']*' comment\.?
-\(\./[A-Za-z0-9\-_]+\.aux\)
-\(\./[A-Za-z0-9\-_]+\.out\)
+\([A-Za-z0-9\-_/]+\.aux\)
+\([A-Za-z0-9\-_/]+\.out\)
 """.strip('\n').split('\n')  # noqa
 
 BAD_LINES = tuple("""
