@@ -52,6 +52,7 @@ Grid set
 TextBlockOrigin set to
 socg-lipics-v2019: fix
 socg-lipics-v2019: subcaption
+Package tocbibind Note: Using chapter style headings, unless overridden.
 """.strip('\n').split('\n'))
 
 CITEREF_PATTERN = (r"(LaTeX|Package natbib) Warning: (Citation|Reference|Hyper reference) `[^']+'"
