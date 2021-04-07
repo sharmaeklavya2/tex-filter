@@ -54,7 +54,7 @@ socg-lipics-v2019: fix
 socg-lipics-v2019: subcaption
 """.strip('\n').split('\n'))
 
-CITEREF_PATTERN = (r"LaTeX Warning: (Citation|Reference|Hyper reference) `[^']+'"
+CITEREF_PATTERN = (r"(LaTeX|Package natbib) Warning: (Citation|Reference|Hyper reference) `[^']+'"
     r" on page \d+ undefined on input line \d+.")
 
 FILTERS = {
