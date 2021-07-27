@@ -53,6 +53,10 @@ TextBlockOrigin set to
 socg-lipics-v2019: fix
 socg-lipics-v2019: subcaption
 Package tocbibind Note: Using chapter style headings, unless overridden.
+(natbib)                Rerun to get citations correct.
+(rerunfilecheck)                Rerun to get outlines right
+(rerunfilecheck)                or use package `bookmark'.
+(rerunfilecheck)                Rerun to get bibliographical references right.
 """.strip('\n').split('\n'))
 
 CITEREF_PATTERN = (r"(LaTeX|Package natbib) Warning: (Citation|Reference|Hyper reference) `[^']+'"
