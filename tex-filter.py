@@ -56,7 +56,7 @@ Package tocbibind Note: Using chapter style headings, unless overridden.
 """.strip('\n').split('\n'))
 
 CITEREF_PATTERN = (r"(LaTeX|Package natbib) Warning: (Citation|Reference|Hyper reference) `[^']+'"
-    r" on page \d+ undefined on input line \d+.")
+    r"( on page \w+)? undefined on input line \d+.")
 
 FILTERS = {
     'paths': (True, 'replace paths of pre-installed fonts, packages, etc. by a stub'),
