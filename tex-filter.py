@@ -67,7 +67,10 @@ FILTERS = {
     'path_stubs': (True, 'remove path stubs'),
     'bad_lines': (True, 'remove lines whose prefix belongs to a blacklist'),
     'full_hbox_details': (True, 'remove details about overfull/underfull \\hbox warnings'),
-    'full_hbox': (False, 'remove overfull/underfull \\hbox warnings'),
+    'ofull_hbox': (False, 'remove overfull \\hbox warnings'),
+    'ufull_hbox': (False, 'remove underfull \\hbox warnings'),
+    'ofull_vbox': (False, 'remove overfull \\vbox warnings'),
+    'ufull_vbox': (False, 'remove underfull \\vbox warnings'),
     'bad_strs': (True, 'remove blacklisted substrings'),
     'page_numbers': (True, 'remove page-numbers'),
     'empty_lines': (True, 'remove empty lines'),
@@ -106,11 +109,17 @@ def clean_file(ifp, ofp, path_prefix, filters):
         if line.startswith('! '):
             errcode = 1
         line = line.strip()
-        full_hbox_warn = line.startswith('Overfull \\hbox') or line.startswith('Underfull \\hbox')
+        has_ofull_hbox = line.startswith('Overfull \\hbox')
+        has_ufull_hbox = line.startswith('Underfull \\hbox')
+        has_ofull_vbox = line.startswith('Overfull \\vbox')
+        has_ufull_vbox = line.startswith('Underfull \\vbox')
         words_of_mem = 'words of node memory still in use' in line
-        state = LineState(full_hbox_warn, words_of_mem)
+        state = LineState(has_ofull_hbox or has_ufull_hbox, words_of_mem)
         discard = ((filters['full_hbox_details'] and prev_state.full_hbox)
-            or (filters['full_hbox'] and state.full_hbox)  # noqa
+            or (filters['ofull_hbox'] and has_ofull_hbox)  # noqa
+            or (filters['ufull_hbox'] and has_ufull_hbox)  # noqa
+            or (filters['ofull_vbox'] and has_ofull_vbox)  # noqa
+            or (filters['ufull_vbox'] and has_ufull_vbox)  # noqa
             or (filters['citeref'] and re.match(CITEREF_PATTERN, line))  # noqa
             or (filters['bad_lines'] and line.startswith(BAD_LINES))  # noqa
             or (filters['words_of_mem'] and (state.words_of_mem or prev_state.words_of_mem))  # noqa
