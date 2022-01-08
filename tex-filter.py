@@ -62,6 +62,8 @@ Package tocbibind Note: Using chapter style headings, unless overridden.
 
 CITEREF_PATTERN = (r"(LaTeX|Package natbib) Warning: (Citation|Reference|Hyper reference) `[^']+'"
     r"( on page \w+)? undefined on input line \d+.")
+LATEX_FONT_SIZE_1 = r"LaTeX Font Warning: Font shape `[\w\/]+' in size <[0-9\.]+> not available"
+LATEX_FONT_SIZE_2 = r'\(Font\)\s+size <[0-9\.]+> substituted on input line \d+.'
 
 FILTERS = {
     'paths': (True, 'replace paths of pre-installed fonts, packages, etc. by a stub'),
@@ -77,6 +79,7 @@ FILTERS = {
     'empty_lines': (True, 'remove empty lines'),
     'citeref': (False, 'remove warnings about missing citations/references'),
     'words_of_mem': (True, 'remove info about words of node memory still in use'),
+    'font_size': (False, 'remove info about font size replacements'),
 }
 
 
@@ -117,6 +120,8 @@ def clean_file(ifp, ofp, path_prefix, filters):
         discard = ((filters['full_hbox_details'] and prev_state.full_hbox)
             or (filters['ofull_hbox'] and has_ofull_hbox)  # noqa
             or (filters['ufull_hbox'] and has_ufull_hbox)  # noqa
+            or (filters['font_size'] and (fullmatch(LATEX_FONT_SIZE_1, line)  # noqa
+                or fullmatch(LATEX_FONT_SIZE_2, line)))  # noqa
             or (filters['citeref'] and re.match(CITEREF_PATTERN, line))  # noqa
             or (filters['bad_lines'] and line.startswith(BAD_LINES))  # noqa
             or (filters['words_of_mem'] and (state.words_of_mem or prev_state.words_of_mem))  # noqa
