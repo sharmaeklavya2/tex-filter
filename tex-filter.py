@@ -13,6 +13,7 @@ UNPREFIXED_PATH_PATTERN = r'/texmf-(dist|var)/[a-zA-Z0-9\-\/\.]+\.(' + FILE_FORM
 PATH_STUB = '#'
 PATH_STUB_PATTERN = r'\(#[\(#\) ]*\)'
 PATH_STUB_PATTERN_2 = r'[\(#\) ]+'
+VBOX_SUFFIX = r'has occurred while \\output is active'
 
 BAD_STRS = tuple("""
  ABD: EveryShipout initializing macros
@@ -111,15 +112,11 @@ def clean_file(ifp, ofp, path_prefix, filters):
         line = line.strip()
         has_ofull_hbox = line.startswith('Overfull \\hbox')
         has_ufull_hbox = line.startswith('Underfull \\hbox')
-        has_ofull_vbox = line.startswith('Overfull \\vbox')
-        has_ufull_vbox = line.startswith('Underfull \\vbox')
         words_of_mem = 'words of node memory still in use' in line
         state = LineState(has_ofull_hbox or has_ufull_hbox, words_of_mem)
         discard = ((filters['full_hbox_details'] and prev_state.full_hbox)
             or (filters['ofull_hbox'] and has_ofull_hbox)  # noqa
             or (filters['ufull_hbox'] and has_ufull_hbox)  # noqa
-            or (filters['ofull_vbox'] and has_ofull_vbox)  # noqa
-            or (filters['ufull_vbox'] and has_ufull_vbox)  # noqa
             or (filters['citeref'] and re.match(CITEREF_PATTERN, line))  # noqa
             or (filters['bad_lines'] and line.startswith(BAD_LINES))  # noqa
             or (filters['words_of_mem'] and (state.words_of_mem or prev_state.words_of_mem))  # noqa
@@ -130,6 +127,10 @@ def clean_file(ifp, ofp, path_prefix, filters):
                     line = line.replace(s, '')
                 for s in BAD_PATTERNS:
                     line = re.sub(s, '', line)
+            if filters['ofull_vbox']:
+                line = re.sub(r'Overfull \\vbox \([0-9\.]+pt too high\) ' + VBOX_SUFFIX, '', line)
+            if filters['ufull_vbox']:
+                line = re.sub(r'Underfull \\vbox \(badness \d+\) ' + VBOX_SUFFIX, '', line)
             if filters['paths']:
                 line = re.sub(path_pattern, PATH_STUB, line)
                 if filters['path_stubs']:
