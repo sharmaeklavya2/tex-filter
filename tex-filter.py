@@ -8,8 +8,9 @@ import argparse
 from collections import namedtuple
 
 
-FILE_FORMATS = "sty|tex|cfg|def|clo|fd|mkii|pfb|enc|map|cls|otf|ldf"
-UNPREFIXED_PATH_PATTERN = r'/texmf-(dist|var)/[a-zA-Z0-9\-\/\.]+\.(' + FILE_FORMATS + ')'
+FILE_FORMATS = "sty|tex|cfg|def|clo|fd|mkii|pfb|enc|map|cls|otf|ldf|tikz|aux|out|bbl"
+UNPREFIXED_STD_PATH_PATTERN = r'/texmf-(dist|var)/[a-zA-Z0-9\-\/\.]+\.(' + FILE_FORMATS + ')'
+LOCAL_PATH_PATTERN = r'./[a-zA-Z0-9\-_\/\.]+\.(' + FILE_FORMATS + ')'
 PATH_STUB = '#'
 PATH_STUB_PATTERN = r'\(#[\(#\) ]*\)'
 PATH_STUB_PATTERN_2 = r'[\(#\) ]+'
@@ -66,7 +67,8 @@ LATEX_FONT_SIZE_1 = r"LaTeX Font Warning: Font shape `[\w\/]+' in size <[0-9\.]+
 LATEX_FONT_SIZE_2 = r'\(Font\)\s+size <[0-9\.]+> substituted on input line \d+.'
 
 FILTERS = {
-    'paths': (True, 'replace paths of pre-installed fonts, packages, etc. by a stub'),
+    'local_paths': (False, 'replace all local paths by a stub'),
+    'std_paths': (True, 'replace paths of pre-installed fonts, packages, etc. by a stub'),
     'path_stubs': (True, 'remove path stubs'),
     'bad_lines': (True, 'remove lines whose prefix belongs to a blacklist'),
     'full_hbox_details': (True, 'remove details about overfull/underfull \\hbox warnings'),
@@ -104,9 +106,9 @@ def fullmatch(pattern, string, flags=0):
         return m
 
 
-def clean_file(ifp, ofp, path_prefix, filters):
+def clean_file(ifp, ofp, std_path_prefix, filters):
     errcode = 0
-    path_pattern = path_prefix + UNPREFIXED_PATH_PATTERN
+    std_path_pattern = std_path_prefix + UNPREFIXED_STD_PATH_PATTERN
     prev_state = LineState(False, False)
     prev_is_empty = True
     for line in ifp:
@@ -136,16 +138,21 @@ def clean_file(ifp, ofp, path_prefix, filters):
                 line = re.sub(r'Overfull \\vbox \([0-9\.]+pt too high\) ' + VBOX_SUFFIX, '', line)
             if filters['ufull_vbox']:
                 line = re.sub(r'Underfull \\vbox \(badness \d+\) ' + VBOX_SUFFIX, '', line)
-            if filters['paths']:
-                line = re.sub(path_pattern, PATH_STUB, line)
-                if filters['path_stubs']:
-                    line = re.sub(PATH_STUB_PATTERN, '', line)
-                    if fullmatch(PATH_STUB_PATTERN_2, line):
-                        line = ''
-                    line = line.replace('<' + PATH_STUB + '>', '')
-                    line = line.replace('{' + PATH_STUB + '}', '')
+            if filters['std_paths']:
+                line = re.sub(std_path_pattern, PATH_STUB, line)
+            if filters['local_paths']:
+                line = re.sub(LOCAL_PATH_PATTERN, PATH_STUB, line)
+            if filters['path_stubs']:
+                line = re.sub(PATH_STUB_PATTERN, '', line)
+                if fullmatch(PATH_STUB_PATTERN_2, line):
+                    line = ''
+                line = line.replace('<' + PATH_STUB + '>', '')
+                line = line.replace('{' + PATH_STUB + '}', '')
             if filters['page_numbers']:
                 line = re.sub(r'\s*\[[0-9\.]+\]', '', line)
+            if filters['path_stubs']:
+                if fullmatch(PATH_STUB_PATTERN_2, line):
+                    line = ''
             if fullmatch(r'[\(\) ]+', line):
                 line = ''
             line = line.strip()
