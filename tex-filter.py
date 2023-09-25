@@ -8,8 +8,8 @@ import argparse
 from collections import namedtuple
 
 
-FILE_FORMATS = "sty|tex|cfg|def|clo|fd|mkii|pfb|enc|map|cls|otf|ldf|tikz|aux|out|bbl|ltx"
-UNPREFIXED_STD_PATH_PATTERN = r'/texmf-(dist|var)/[a-zA-Z0-9\-\/\.]+\.(' + FILE_FORMATS + ')'
+FILE_FORMATS = "sty|tex|cfg|def|clo|fd|mkii|pfb|enc|map|cls|otf|ldf|tikz|aux|out|bbl|ltx|sto"
+UNPREFIXED_STD_PATH_PATTERN = r'/texmf-(dist|var)/[a-zA-Z0-9\-_\/\.]+\.(' + FILE_FORMATS + ')'
 LOCAL_PATH_PATTERN = r'./[a-zA-Z0-9\-_\/\.]+\.(' + FILE_FORMATS + ')'
 PATH_STUB = '#'
 PATH_STUB_PATTERN = r'\(#[\(#\) ]*\)'
