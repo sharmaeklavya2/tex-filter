@@ -27,6 +27,7 @@ warning  \(pdf backend\): unreferenced destination with name '[^']*'
  ?Excluding '[^']*' comment\.?
 \([A-Za-z0-9\-_/]+\.aux\)
 \([A-Za-z0-9\-_/]+\.out\)
+Library \(tcolorbox\): 'tcb[A-Za-z0-9]+\.code\.tex' version '[0-9\.]+'
 """.strip('\n').split('\n')  # noqa
 
 BAD_LINES = tuple("""
