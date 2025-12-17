@@ -157,7 +157,7 @@ def clean_file(ifp, ofp, std_path_prefix, filters):
             if fullmatch(r'[\(\) ]+', line):
                 line = ''
             line = line.strip()
-            if not(line == '' and (filters['empty_lines'] or prev_is_empty)):
+            if not (line == '' and (filters['empty_lines'] or prev_is_empty)):
                 ofp.write(line + '\n')
                 ofp.flush()
             prev_is_empty = line == ''
