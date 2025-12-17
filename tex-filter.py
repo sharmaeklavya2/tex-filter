@@ -176,7 +176,9 @@ def main():
 
     prefix = get_prefix()
     filters = {name: bool(value) for name, value in vars(args).items()}
-    errcode = clean_file(sys.stdin, sys.stdout, prefix, filters)
+
+    stdinSafe = open(sys.stdin.fileno(), errors='replace')
+    errcode = clean_file(stdinSafe, sys.stdout, prefix, filters)
     if args.detect_error:
         sys.exit(errcode)
 
