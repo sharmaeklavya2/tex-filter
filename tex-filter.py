@@ -8,7 +8,7 @@ import argparse
 from collections import namedtuple
 
 
-FILE_FORMATS = "aux|bbl|bbx|cbx|cfg|clo|cls|dbx|def|dict|enc|fd|lbx|ldf|ltx|map|mkii|otf|out|pdf|pfb|sto|sty|tex|tikz|ttf"
+FILE_FORMATS = "aux|bbl|bbx|cbx|cfg|clo|cls|dbx|def|dict|enc|fd|lbx|ldf|ltx|map|mf|mkii|otf|out|pdf|pfb|sto|sty|tex|tikz|ttf"
 UNPREFIXED_STD_PATH_PATTERN = r'/texmf-(dist|var)/[a-zA-Z0-9\-_\/\.]+\.(' + FILE_FORMATS + ')'
 LOCAL_PATH_PATTERN = r'./[a-zA-Z0-9\-_\/\.]+\.(' + FILE_FORMATS + ')'
 PATH_STUB = '#'
