@@ -18,6 +18,7 @@ VBOX_SUFFIX = r'has occurred while \\output is active'
 
 BAD_STRS = tuple("""
  ABD: EveryShipout initializing macros
+`Fixed Point Package', Version 0.8, April 2, 1995 (C) Michael Mehlich
 """.strip('\n').split('\n'))
 
 BAD_PATTERNS = r"""
@@ -25,6 +26,7 @@ pdfTeX warning \(dest\): name{[^}]*} has been referenced but does not exist, rep
 warning  \(pdf backend\): unreferenced destination with name '[^']*'
  ?Excluding comment '[^']*'\.?
  ?Excluding '[^']*' comment\.?
+FP-[A-Z]+
 \([A-Za-z0-9\-_/]+\.aux\)
 \([A-Za-z0-9\-_/]+\.out\)
 Library \(tcolorbox\): 'tcb[A-Za-z0-9]+\.code\.tex' version '[0-9\.]+'
