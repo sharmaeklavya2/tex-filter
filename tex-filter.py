@@ -27,6 +27,7 @@ pdfTeX warning \(dest\): name{[^}]*} has been referenced but does not exist, rep
 warning  \(pdf backend\): unreferenced destination with name '[^']*'
  ?Excluding comment '[^']*'\.?
  ?Excluding '[^']*' comment\.?
+Ok[ )]?
 FP-[A-Z]+
 \([A-Za-z0-9\-_/]+\.aux\)
 \([A-Za-z0-9\-_/]+\.out\)
@@ -37,8 +38,13 @@ BAD_LINES = tuple("""
 This is pdfTeX, Version
 This is LuaHBTeX, Version
 This is XeTeX, Version
+This is METAFONT, Version
 restricted \\write18 enabled.
 restricted system commands enabled.
+mktexpk: Running mf-nowin -progname=mf
+mktexpk: /
+(some charht values had to be adjusted by as much as
+Font metrics written on
 LaTeX2e <
 entering extended mode
 L3 programming layer
