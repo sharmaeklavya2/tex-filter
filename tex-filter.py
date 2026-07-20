@@ -2,6 +2,7 @@
 """Remove unneeded info from TeX's stdout."""
 
 import sys
+import os
 import re
 import subprocess
 import argparse
@@ -109,11 +110,24 @@ def fullmatch(pattern, string, flags=0):
         return m
 
 
+def redirect_stream(ofp):
+    try:
+        devnull = os.open(os.devnull, os.O_WRONLY)
+        os.dup2(devnull, ofp.fileno())
+        os.close(devnull)
+    except OSError:
+        pass
+
+
 def clean_file(ifp, ofp, std_path_prefix, filters):
     errcode = 0
     std_path_pattern = std_path_prefix + UNPREFIXED_STD_PATH_PATTERN
     prev_state = LineState(False, False)
     prev_is_empty = True
+    # Once ofp's reader (e.g. `head`) goes away, stop trying to write to it,
+    # but keep reading ifp to the end so that whatever's writing to ifp
+    # (e.g., pdflatex) never sees a closed pipe.
+    output_broken = False
     for line in ifp:
         if line.startswith('! '):
             errcode = 1
@@ -160,8 +174,17 @@ def clean_file(ifp, ofp, std_path_prefix, filters):
                 line = ''
             line = line.strip()
             if not (line == '' and (filters['empty_lines'] or prev_is_empty)):
-                ofp.write(line + '\n')
-                ofp.flush()
+                if not output_broken:
+                    try:
+                        ofp.write(line + '\n')
+                        ofp.flush()
+                    except BrokenPipeError:
+                        output_broken = True
+                        # Point ofp's fd at devnull immediately, so that later
+                        # writes (including the implicit flush Python does to
+                        # stdout at interpreter shutdown) hit devnull instead
+                        # of the dead pipe and don't raise again.
+                        redirect_stream(ofp)
             prev_is_empty = line == ''
         prev_state = state
     return errcode
@@ -181,6 +204,7 @@ def main():
 
     stdinSafe = open(sys.stdin.fileno(), errors='replace')
     errcode = clean_file(stdinSafe, sys.stdout, prefix, filters)
+    redirect_stream(sys.stdout)  # in case pipe was broken and sys.exit flushes stdout
     if args.detect_error:
         sys.exit(errcode)
 
